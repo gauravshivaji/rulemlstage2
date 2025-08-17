@@ -14,7 +14,6 @@ try:
 except Exception:
     SKLEARN_OK = False
 
-# Add around line 10, after ML imports:
 def tradingview_link(ticker):
     tv_ticker = ticker.replace('.NS', '')
     url = f"https://www.tradingview.com/chart/?symbol=NSE:{tv_ticker}"
@@ -26,11 +25,10 @@ def display_with_tradingview(df, key="Ticker", nrows=25):
         return
     df = df.copy()
     df["TradingView"] = df[key].apply(tradingview_link)
+    # Move TradingView to the front, drop original Ticker for clarity
     cols = ["TradingView"] + [c for c in df.columns if c not in {"TradingView", key}]
     md_table = df[cols].head(nrows).to_markdown(index=False)
     st.markdown(md_table, unsafe_allow_html=True)
-
-
 
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="Nifty500 Buy/Sell Predictor", layout="wide")
@@ -285,7 +283,7 @@ def build_ml_dataset_for_tickers(
         if label_mode == "rule":
             y = label_from_rule_based(feat, rsi_buy=rsi_buy, rsi_sell=rsi_sell)
         else:
-            y = label_from_future_returns(feat, horizon=horizon, buy_thr=buy_thr, sell_thr=sell_thr)
+            y = label_from_future_returns(feat, horizon=horizon, buy_thr=buy_thr, sell_thr=ml_sell_thr)
 
         data = feat.join(y.rename("Label")).dropna()
         if data.empty:
@@ -437,14 +435,17 @@ if run_analysis:
         if feats.empty:
             st.info("No rule-based buy signals.")
         else:
-            display_with_tradingview(preds_rule[preds_rule["Buy_Point"]], key="Ticker")
+            buy_df = preds_rule[preds_rule["Buy_Point"]]
+            display_with_tradingview(buy_df, key="Ticker")
 
+            
 
     with tab2:
         if feats.empty:
             st.info("No rule-based sell signals.")
         else:
-            display_with_tradingview(preds_rule[preds_rule["Sell_Point"]], key="Ticker")
+            sell_df = preds_rule[preds_rule["Sell_Point"]]
+            display_with_tradingview(sell_df, key="Ticker")
 
 
     with tab3:
@@ -522,8 +523,5 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
-
-
-
 
 
