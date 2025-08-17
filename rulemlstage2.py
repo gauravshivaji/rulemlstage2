@@ -496,7 +496,7 @@ if run_analysis:
                    
 
 
-                       if rows:
+                    if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
                         st.dataframe(ml_df, use_container_width=True)
                        else:
@@ -513,6 +513,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
