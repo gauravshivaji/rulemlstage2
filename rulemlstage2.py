@@ -501,10 +501,22 @@ if run_analysis:
                         def tradingview_link(ticker):
                             return f"https://in.tradingview.com/chart/?symbol=NSE%3A{ticker.replace('.NS','')}"
 
-                        ml_df["TradingView"] = ml_df["Ticker"].apply( lambda x: f'<a href="{tradingview_link(x)}" target="_blank">📈 Chart</a>')
+                       #ml_df["TradingView"] = ml_df["Ticker"].apply( lambda x: f'<a href="{tradingview_link(x)}" target="_blank">📈 Chart</a>')
+                        ml_df["TradingView"] = ml_df["Ticker"].apply(tradingview_link)
+                        st.dataframe(
+                            ml_df,
+                            use_container_width=True,
+                            column_config={
+                                "TradingView": st.column_config.LinkColumn(
+                                    "TradingView",
+                                     display_text="📈 Chart"  # What shows in the table
+                                           )
+        }
+    )
 
-                        st.markdown(  ml_df.to_html(escape=False, index=False),unsafe_allow_html=True
-)
+
+                        #st.markdown(  ml_df.to_html(escape=False, index=False),unsafe_allow_html=True
+
                     else:
                         st.info("Could not compute ML features for the selected tickers.")
 
@@ -519,6 +531,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
