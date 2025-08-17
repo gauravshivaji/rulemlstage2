@@ -14,21 +14,13 @@ try:
 except Exception:
     SKLEARN_OK = False
 
-def tradingview_link(ticker):
-    tv_ticker = ticker.replace('.NS', '')
-    url = f"https://www.tradingview.com/chart/?symbol=NSE:{tv_ticker}"
-    return f"[{ticker}]({url})"
-
-def display_with_tradingview(df, key="Ticker", nrows=25):
-    if df is None or df.empty or key not in df.columns:
-        st.info("No signals to display.")
-        return
+def add_tradingview_links(df):
     df = df.copy()
-    df["TradingView"] = df[key].apply(tradingview_link)
-    # Move TradingView to the front, drop original Ticker for clarity
-    cols = ["TradingView"] + [c for c in df.columns if c not in {"TradingView", key}]
-    md_table = df[cols].head(nrows).to_markdown(index=False)
-    st.markdown(md_table, unsafe_allow_html=True)
+    if "Ticker" in df.columns:
+        df["TradingView"] = df["Ticker"].apply(
+            lambda t: f'<a href="https://www.tradingview.com/chart/?symbol=NSE:{t.replace(".NS","")}" target="_blank">📈 Chart</a>'
+        )
+    return df
 
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="Nifty500 Buy/Sell Predictor", layout="wide")
@@ -435,22 +427,23 @@ if run_analysis:
         if feats.empty:
             st.info("No rule-based buy signals.")
         else:
-            buy_df = preds_rule[preds_rule["Buy_Point"]]
-            display_with_tradingview(buy_df, key="Ticker")
+            df_buy = preds_rule[preds_rule["Buy_Point"]]
+            df_buy = add_tradingview_links(df_buy)
+            st.write(df_buy.to_html(escape=False, index=False), unsafe_allow_html=True)
 
-            
-
+         
     with tab2:
         if feats.empty:
             st.info("No rule-based sell signals.")
         else:
-            sell_df = preds_rule[preds_rule["Sell_Point"]]
-            display_with_tradingview(sell_df, key="Ticker")
+            df_sell = preds_rule[preds_rule["Sell_Point"]]
+            df_sell = add_tradingview_links(df_sell)
+            st.write(df_sell.to_html(escape=False, index=False), unsafe_allow_html=True)
 
 
     with tab3:
         ticker_for_chart = st.selectbox("Chart Ticker", selected_tickers)
-        chart_df = yf.download(ticker_for_chart, period="1y", interval="1d", progress=False, threads=True)
+        chart_df = yf.download(ticker_for_chart, period="6mo", interval="1d", progress=False, threads=True)
         if not chart_df.empty:
             chart_df = compute_features(chart_df, sma_tuple, support_window).dropna()
             if not chart_df.empty:
@@ -496,14 +489,14 @@ if run_analysis:
                             "Ticker": t,
                             "ML_Pred": {1: "BUY", 0: "HOLD", -1: "SELL"}.get(int(pred), "HOLD"),
                             "Prob_Buy": float(proba[list(clf.classes_).index(1)]) if proba is not None and 1 in clf.classes_ else np.nan,
-                            "Prob_Sell": float(proba[list(clf.classes_).index(-1)]) if proba is not None and -1 in clf.classes_ else np.nan,
                             "Prob_Hold": float(proba[list(clf.classes_).index(0)]) if proba is not None and 0 in clf.classes_ else np.nan,
-})
- 
+                            "Prob_Sell": float(proba[list(clf.classes_).index(-1)]) if proba is not None and -1 in clf.classes_ else np.nan,
+                        })
 
                     if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
-                        display_with_tradingview(ml_df, key="Ticker")
+                        ml_df = add_tradingview_links(ml_df)
+                        st.write(ml_df.to_html(escape=False, index=False), unsafe_allow_html=True)
 
                         st.download_button(
                             "📥 Download ML Signals",
@@ -524,7 +517,5 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
-
-
 
 
