@@ -499,7 +499,7 @@ if run_analysis:
                     if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
                         st.dataframe(ml_df, use_container_width=True)
-                       else:
+                    else:
                         st.info("Could not compute ML features for the selected tickers.")
 
 
@@ -513,6 +513,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
