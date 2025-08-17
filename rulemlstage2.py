@@ -501,7 +501,7 @@ if run_analysis:
                         def tradingview_link(ticker):
                             return f"https://in.tradingview.com/chart/?symbol=NSE%3A{ticker.replace('.NS','')}"
 
-                        ml_df["TradingView"] = ml_df["Ticker"].apply(lambda x: f"[Chart]({tradingview_link(x)})")
+                         ml_df["TradingView"] = ml_df["Ticker"].apply( lambda x: f'<a href="{tradingview_link(x)}" target="_blank">📈 Chart</a>')
 
                         st.dataframe(ml_df, use_container_width=True)
                     else:
@@ -518,6 +518,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
