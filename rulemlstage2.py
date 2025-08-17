@@ -496,9 +496,10 @@ if run_analysis:
                             "Ticker": t,
                             "ML_Pred": {1: "BUY", 0: "HOLD", -1: "SELL"}.get(int(pred), "HOLD"),
                             "Prob_Buy": float(proba[list(clf.classes_).index(1)]) if proba is not None and 1 in clf.classes_ else np.nan,
-                            "Prob_Hold": float(proba[list(clf.classes_).index(0)]) if proba is not None and 0 in clf.classes_ else np.nan,
                             "Prob_Sell": float(proba[list(clf.classes_).index(-1)]) if proba is not None and -1 in clf.classes_ else np.nan,
-                        })
+                            "Prob_Hold": float(proba[list(clf.classes_).index(0)]) if proba is not None and 0 in clf.classes_ else np.nan,
+})
+ 
 
                     if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
@@ -523,5 +524,6 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
