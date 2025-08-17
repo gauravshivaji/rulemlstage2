@@ -498,6 +498,11 @@ if run_analysis:
 
                     if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
+                        def tradingview_link(ticker):
+                            return f"https://in.tradingview.com/chart/?symbol=NSE%3A{ticker.replace('.NS','')}"
+
+                        ml_df["TradingView"] = ml_df["Ticker"].apply(lambda x: f"[Chart]({tradingview_link(x)})")
+
                         st.dataframe(ml_df, use_container_width=True)
                     else:
                         st.info("Could not compute ML features for the selected tickers.")
@@ -513,6 +518,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
