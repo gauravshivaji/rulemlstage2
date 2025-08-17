@@ -450,7 +450,7 @@ if run_analysis:
 
     with tab3:
         ticker_for_chart = st.selectbox("Chart Ticker", selected_tickers)
-        chart_df = yf.download(ticker_for_chart, period="6mo", interval="1d", progress=False, threads=True)
+        chart_df = yf.download(ticker_for_chart, period="1y", interval="1d", progress=False, threads=True)
         if not chart_df.empty:
             chart_df = compute_features(chart_df, sma_tuple, support_window).dropna()
             if not chart_df.empty:
@@ -524,6 +524,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
