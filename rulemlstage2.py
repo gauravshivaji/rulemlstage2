@@ -493,19 +493,34 @@ if run_analysis:
                             "Prob_Sell": float(proba[list(clf.classes_).index(-1)]) if proba is not None and -1 in clf.classes_ else np.nan,
                         })
 
+                   
+
+
                     if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
-                        ml_df = add_tradingview_links(ml_df)
-                        st.write(ml_df.to_html(escape=False, index=False), unsafe_allow_html=True)
 
+    # Select only required columns for sorting/filtering
+                        cols = ["Ticker", "ML_Pred", "Prob_Buy", "Prob_Hold", "Prob_Sell"]
+
+    # Show sortable/filterable dataframe without HTML links (links not clickable here)
+                        st.dataframe(ml_df[cols], use_container_width=True)
+
+    # Optional: provide clickable TradingView link outside the table
+                        selected_ticker = st.selectbox("Open TradingView Chart for ticker:", ml_df["Ticker"].tolist())
+                        chart_url = f'https://www.tradingview.com/chart/?symbol=NSE:{selected_ticker.replace(".NS","")}'
+                        st.markdown(f'Click to open [📈 TradingView chart]({chart_url})')
+
+    # Download button including all columns (including links if you like)
                         st.download_button(
                             "📥 Download ML Signals",
                             ml_df.to_csv(index=False).encode(),
                             "nifty500_ml_signals.csv",
                             "text/csv",
-                        )
+    )
                     else:
+                        
                         st.info("Could not compute ML features for the selected tickers.")
+
 
     # -------- Download rule snapshot --------
     if 'preds_rule' in locals() and preds_rule is not None and not preds_rule.empty:
@@ -517,5 +532,6 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
