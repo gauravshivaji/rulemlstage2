@@ -503,7 +503,8 @@ if run_analysis:
 
                         ml_df["TradingView"] = ml_df["Ticker"].apply( lambda x: f'<a href="{tradingview_link(x)}" target="_blank">📈 Chart</a>')
 
-                        st.dataframe(ml_df, use_container_width=True)
+                        st.markdown(  ml_df.to_html(escape=False, index=False),unsafe_allow_html=True
+)
                     else:
                         st.info("Could not compute ML features for the selected tickers.")
 
@@ -518,6 +519,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
