@@ -498,9 +498,14 @@ if run_analysis:
 
                     if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
+                        
+    # Add TradingView column as plain URL string
+                       ml_df["TradingView"] = ml_df["Ticker"].apply(
+                           lambda t: f"https://www.tradingview.com/chart/?symbol=NSE:{t.replace('.NS','')}"
+    )
 
     # Select only required columns for sorting/filtering
-                        cols = ["Ticker", "ML_Pred", "Prob_Buy", "Prob_Hold", "Prob_Sell"]
+                        cols = ["Ticker", "ML_Pred", "Prob_Buy", "Prob_Hold", "Prob_Sell","TradingView"]
 
     # Show sortable/filterable dataframe without HTML links (links not clickable here)
                         st.dataframe(ml_df[cols], use_container_width=True)
@@ -532,6 +537,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
