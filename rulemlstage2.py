@@ -30,7 +30,6 @@ def display_with_tradingview(df, key="Ticker", nrows=20):
     st.markdown(md_table, unsafe_allow_html=True)
 
 # ---------------- CONFIG ----------------
-
 NIFTY500_TICKERS = [
     "360ONE.NS","3MINDIA.NS","ABB.NS","ACC.NS","ACMESOLAR.NS","AIAENG.NS","APLAPOLLO.NS","AUBANK.NS","AWL.NS","AADHARHFC.NS",
     "AARTIIND.NS","AAVAS.NS","ABBOTINDIA.NS","ACE.NS","ADANIENSOL.NS","ADANIENT.NS","ADANIGREEN.NS","ADANIPORTS.NS","ADANIPOWER.NS","ATGL.NS",
@@ -170,8 +169,8 @@ def predict_buy_sell_rule(df, rsi_buy=30, rsi_sell=70):
         (results["SMA50"] > results["SMA200"]) &
         (results["RSI"] > 50)
     )
-    results["Sell_Point"] = results["Reversal_Buy"] | results["Trend_Buy"]
-    results["Buy_Point"] = (
+    results["Buy_Point"] = results["Reversal_Buy"] | results["Trend_Buy"]
+    results["Sell_Point"] = (
         ((results["RSI"] > rsi_sell) & (results["Bearish_Div"])) |
         (results["Close"] < results["Support"]) |
         ((results["SMA20"] < results["SMA50"]) & (results["SMA50"] < results["SMA200"]))
@@ -348,11 +347,13 @@ if run_analysis:
             with st.spinner("Building ML dataset & training model..."):
                 if label_mode == "Rule-based (teach the rules)":
                     X, y, feature_cols, tickers_series = build_ml_dataset_for_tickers(
-                        selected_tickers, sma_tuple, support_window, label_mode="rule", rsi_buy=rsi_buy, rsi_sell=rsi_sell
+                        selected_tickers, sma_tuple, support_window,
+                        label_mode="rule", rsi_buy=rsi_buy, rsi_sell=rsi_sell
                     )
                 else:
                     X, y, feature_cols, tickers_series = build_ml_dataset_for_tickers(
-                        selected_tickers, sma_tuple, support_window, label_mode="future", horizon=ml_horizon, buy_thr=ml_buy_thr, sell_thr=ml_sell_thr
+                        selected_tickers, sma_tuple, support_window,
+                        label_mode="future", horizon=ml_horizon, buy_thr=ml_buy_thr, sell_thr=ml_sell_thr
                     )
                 if X.empty or y.empty:
                     st.warning("Not enough historical data to train the ML model for the chosen settings.")
@@ -376,7 +377,7 @@ if run_analysis:
                             "Prob_Sell": float(proba[list(clf.classes_).index(-1)]) if proba is not None and -1 in clf.classes_ else np.nan,
                         })
                     if rows:
-                        ml_df = pd.DataFrame(rows).sort_values(["ML_Pred", "Prob_Buy"], ascending=[True, False])
+                        ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
                         display_with_tradingview(ml_df, key="Ticker")
                     else:
                         st.info("Could not compute ML features for the selected tickers.")
@@ -389,4 +390,3 @@ if run_analysis:
             "text/csv",
         )
 st.markdown("⚠ Educational use only — not financial advice.")
-
