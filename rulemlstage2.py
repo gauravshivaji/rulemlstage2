@@ -508,6 +508,9 @@ if run_analysis:
 
     # Show sortable/filterable dataframe without HTML links (links not clickable here)
                         st.dataframe(ml_df[cols], use_container_width=True)
+                        cols_order = ["Ticker", "Buy_Point", "TradingView"] + [col for col in df_buy.columns if col not in ["Ticker", "Buy_Point", "TradingView"]]
+
+                        
 
     # Optional: provide clickable TradingView link outside the table
                         selected_ticker = st.selectbox("Open TradingView Chart for ticker:", ml_df["Ticker"].tolist())
@@ -536,6 +539,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
