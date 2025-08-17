@@ -285,7 +285,7 @@ def build_ml_dataset_for_tickers(
         if label_mode == "rule":
             y = label_from_rule_based(feat, rsi_buy=rsi_buy, rsi_sell=rsi_sell)
         else:
-            y = label_from_future_returns(feat, horizon=horizon, buy_thr=buy_thr, sell_thr=ml_sell_thr)
+            y = label_from_future_returns(feat, horizon=horizon, buy_thr=buy_thr, sell_thr=sell_thr)
 
         data = feat.join(y.rename("Label")).dropna()
         if data.empty:
@@ -522,6 +522,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
