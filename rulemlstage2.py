@@ -498,23 +498,27 @@ if run_analysis:
 
                     if rows:
                         ml_df = pd.DataFrame(rows).sort_values(["ML_Pred","Prob_Buy"], ascending=[True, False])
-                        
-    # Add TradingView column as plain URL string
                         ml_df["TradingView"] = ml_df["Ticker"].apply(
-                            lambda t: f"https://www.tradingview.com/chart/?symbol=NSE:{t.replace('.NS','')}" )
+                            lambda t: f"https://www.tradingview.com/chart/?symbol=NSE:{t.replace('.NS','')}"
+    )
+                        
+    
 
     # Select only required columns for sorting/filtering
                         cols = ["Ticker", "ML_Pred", "Prob_Buy", "Prob_Hold", "Prob_Sell","TradingView"]
 
     # Show sortable/filterable dataframe without HTML links (links not clickable here)
                         st.dataframe(ml_df[cols], use_container_width=True)
+                        st.markdown("### Open TradingView chart by clicking button below:")
+                        for i, ticker in enumerate(ml_df["Ticker"]):
+                            if st.button(f"📈 Chart for {ticker}", key=f"tv_button_{i}"):
+                                url = f"https://www.tradingview.com/chart/?symbol=NSE:{ticker.replace('.NS','')}"
+            # Show clickable link to open chart
+                                st.markdown(f"[Open TradingView chart for {ticker}]({url})")
                         
                         
 
-    # Optional: provide clickable TradingView link outside the table
-                        selected_ticker = st.selectbox("Open TradingView Chart for ticker:", ml_df["Ticker"].tolist())
-                        chart_url = f'https://www.tradingview.com/chart/?symbol=NSE:{selected_ticker.replace(".NS","")}'
-                        st.markdown(f'Click to open [📈 TradingView chart]({chart_url})')
+ 
 
     # Download button including all columns (including links if you like)
                         st.download_button(
@@ -538,6 +542,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
