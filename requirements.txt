@@ -5,4 +5,7 @@ ta
 plotly
 numpy
 scipy
+tabulate
+
+
 scikit-learn
