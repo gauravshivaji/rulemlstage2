@@ -501,8 +501,7 @@ if run_analysis:
                         
     # Add TradingView column as plain URL string
                        ml_df["TradingView"] = ml_df["Ticker"].apply(
-                           lambda t: f"https://www.tradingview.com/chart/?symbol=NSE:{t.replace('.NS','')}"
-    )
+                           lambda t: f"https://www.tradingview.com/chart/?symbol=NSE:{t.replace('.NS','')}" )
 
     # Select only required columns for sorting/filtering
                         cols = ["Ticker", "ML_Pred", "Prob_Buy", "Prob_Hold", "Prob_Sell","TradingView"]
@@ -537,6 +536,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
