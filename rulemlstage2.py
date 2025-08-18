@@ -446,7 +446,16 @@ if run_analysis:
             st.info("No rule-based sell signals.")
         else:
             df_sell = preds_rule[preds_rule["Sell_Point"]]
-            df_sell = add_tradingview_links(df_sell)
+            df_sell["TradingView"] = df_sell["Ticker"].apply(lambda x: f'<a href="https://in.tradingview.com/chart/?symbol=NSE%3A{x.replace(".NS","")}" target="_blank">📈 Chart</a>')
+            cols = df_sell.columns.tolist()
+            if "Ticker" in cols and "TradingView" in cols:
+                  cols.remove("TradingView")
+                  ticker_index = cols.index("Ticker")
+                  cols.insert(ticker_index + 1, "TradingView")
+                  df_sell = df_sell[cols]
+
+
+
             st.write(df_sell.to_html(escape=False, index=False), unsafe_allow_html=True)
 
 
@@ -540,6 +549,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
