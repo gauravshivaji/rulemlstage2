@@ -428,9 +428,8 @@ if run_analysis:
             st.info("No rule-based buy signals.")
         else:
             df_buy = preds_rule[preds_rule["Buy_Point"]]
-            df_buy["TradingView"] = df_buy["Ticker"].apply(
-                lambda x: f'<a href="https://in.tradingview.com/chart/?symbol=NSE%3A{x.replace(".NS","")}" target="_blank">📈 Chart</a>'
-        )   cols = df_buy.columns.tolist()
+            df_buy["TradingView"] = df_buy["Ticker"].apply(lambda x: f'<a href="https://in.tradingview.com/chart/?symbol=NSE%3A{x.replace(".NS","")}" target="_blank">📈 Chart</a>' )
+            cols = df_buy.columns.tolist()
             if "Ticker" in cols and "TradingView" in cols:
                 cols.remove("TradingView")
                 ticker_index = cols.index("Ticker")
@@ -541,6 +540,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
